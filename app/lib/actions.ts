@@ -39,6 +39,8 @@ export async function createInvoice(prevState: State, formData: FormData) {
         status: formData.get('status'),
     });
 
+    console.log(validateFields)
+
     if (!validateFields.success) {
         return {
             errors: validateFields.error.flatten().fieldErrors,
@@ -46,12 +48,12 @@ export async function createInvoice(prevState: State, formData: FormData) {
         }
     }
 
-    const amountInCents = amount * 100;
+    const amountInCents = validateFields.data.amount * 100;
     const date = new Date().toISOString().split('T')[0];
     try {
         await sql`
             INSERT INTO invoices (customer_id, amount, status, date)
-            VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
+            VALUES (${validateFields.data.customerId}, ${amountInCents}, ${status}, ${date})
         `;
     } catch (error) {
         return {
