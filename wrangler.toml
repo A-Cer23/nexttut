@@ -1,0 +1,4 @@
+[[d1_databases]]
+binding = "nexttutdb" # i.e. available in your Worker on env.DB
+database_name = "nexttutdb"
+database_id = "0b9de9b6-922d-474f-a7d5-283e8b032be1"

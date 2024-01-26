@@ -1,15 +1,29 @@
-import { sql } from '@vercel/postgres';
-import {
-  CustomerField,
-  CustomersTableType,
-  InvoiceForm,
-  InvoicesTable,
-  LatestInvoiceRaw,
-  User,
-  Revenue,
-} from './definitions';
-import { formatCurrency } from './utils';
-import { unstable_noStore as noStore } from 'next/cache';
+import {sql} from '@vercel/postgres';
+import {CustomerField, CustomersTableType, InvoiceForm, InvoicesTable, LatestInvoiceRaw, User,} from './definitions';
+import {formatCurrency} from './utils';
+import {unstable_noStore as noStore} from 'next/cache';
+import {drizzle} from 'drizzle-orm/d1';
+import * as schema from '../../db/schema';
+import {revenue} from '../../db/schema';
+
+
+// export interface Env {
+//   DB: DrizzleD1Database;
+// }
+// const sumfunc = async () => {
+//   const db = drizzle(env.DB);
+//   const result = await db.select().from(users).all()
+//   return Response.json(result);
+// }
+
+const customConfig = {
+  schema,
+  databaseName: "nexttutdb",
+  tableName: "revenue",
+};
+
+
+
 
 export async function fetchRevenue() {
   noStore();
@@ -20,14 +34,12 @@ export async function fetchRevenue() {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
 
-    console.log('Fetching revenue data...');
-    await new Promise((resolve) => setTimeout(resolve, 3000));
 
-    const data = await sql<Revenue>`SELECT * FROM revenue`;
+    const db = drizzle(process.env.nexttutdb , customConfig);
 
-    console.log('Data fetch completed after 3 seconds.');
+    // const data = await sql<Revenue>`SELECT * FROM revenue`;
 
-    return data.rows;
+    return await db.select().from(revenue);
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch revenue data.');
