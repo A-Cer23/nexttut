@@ -16,11 +16,6 @@ import {revenue} from '../../db/schema';
 //   return Response.json(result);
 // }
 
-const customConfig = {
-  schema,
-  databaseName: "nexttutdb",
-  tableName: "revenue",
-};
 
 
 
@@ -35,7 +30,7 @@ export async function fetchRevenue() {
     // Don't do this in production :)
 
 
-    const db = drizzle(process.env.nexttutdb , customConfig);
+    const db = drizzle(process.env.nexttutdb , {schema: schema});
 
     // const data = await sql<Revenue>`SELECT * FROM revenue`;
 
